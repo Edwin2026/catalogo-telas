@@ -58,7 +58,6 @@
   .card-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s; }
   .card:hover .card-img { transform:scale(1.04); }
   .card-img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; }
-  .card-img-placeholder span { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--warm-grey); letter-spacing:0.1em; }
   .img-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--tag-bg); transition:opacity 0.3s; }
   .img-loading .mini-spin { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent-dark); border-radius:50%; animation:spin 0.7s linear infinite; }
   .card-badge { position:absolute; top:10px; left:10px; background:var(--ink); color:var(--cream); font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; padding:0.2rem 0.55rem; text-transform:uppercase; z-index:1; }
@@ -89,6 +88,9 @@
   .spec-box { background:var(--tag-bg); padding:0.8rem 1rem; }
   .spec-val { font-family:'DM Mono',monospace; font-size:1.25rem; color:var(--ink); }
   .spec-lbl { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--warm-grey); text-transform:uppercase; margin-top:0.25rem; }
+  .modal-extra { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.2rem; }
+  .extra-item { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--warm-grey); }
+  .extra-item strong { display:block; color:var(--ink); font-size:0.78rem; margin-bottom:0.2rem; }
   .modal-codigo { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--warm-grey); letter-spacing:0.1em; margin-top:auto; padding-top:1rem; border-top:1px solid var(--border); }
   .empty { grid-column:1/-1; text-align:center; padding:6rem 2rem; color:var(--warm-grey); }
   .empty p { font-style:italic; font-size:1.1rem; }
@@ -99,6 +101,7 @@
     .modal { grid-template-columns:1fr; }
     .modal-img-wrap { min-height:220px; max-height:280px; }
     .grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); padding:1.5rem; }
+    .header-stats { gap:1.2rem; }
   }
 </style>
 </head>
@@ -109,8 +112,8 @@
     <div>
       <div class="header-label">Inventario en tiempo real</div>
       <h1>Catálogo de<br><em>Telas Disponibles</em></h1>
-      <div class="header-sub">Datos sincronizados desde Google Sheets</div>
-      <div class="live-badge"><span class="live-dot"></span>Conectado a base de datos en vivo</div>
+      <div class="header-sub">Datos sincronizados desde SharePoint</div>
+      <div class="live-badge"><span class="live-dot"></span>Conectado a SharePoint · Power Automate</div>
     </div>
     <div class="header-stats">
       <div class="stat"><div class="stat-num" id="statTelas">—</div><div class="stat-lbl">Telas</div></div>
@@ -155,55 +158,45 @@
         <div class="spec-box"><div class="spec-val" id="modalGrams"></div><div class="spec-lbl">Gramos / m²</div></div>
         <div class="spec-box"><div class="spec-val" id="modalLibras"></div><div class="spec-lbl">Libras disponibles</div></div>
       </div>
+      <div class="modal-extra" id="modalExtra"></div>
       <div class="modal-codigo" id="modalCodigo"></div>
     </div>
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">×</button>
   </div>
 </div>
 
-<footer>Catálogo sincronizado en tiempo real · Google Sheets + Google Drive</footer>
+<footer>Catálogo sincronizado en tiempo real · SharePoint + Power Automate</footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbw4Z1wmdBXMJ3ymbrC_2MfF-sxivcQab-142MVm9eHEK3N5hL8_S-_o1GhklB35XSGB/exec';
+const API_URL = 'https://default01de7128f44f4d04b3006a199889f3.2d.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f3bf85f53e8a41238fb31d77b5ce720a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=QRUS8Vebf5rNs_AYxZjhiRFZhP0HiZK7lEAHgXoWC9Q';
 
 let allData = [];
 
-// Convert any Google Drive link format to a direct image URL
-function driveToImg(url) {
+// Convierte links de Google Drive, OneDrive o SharePoint a URL directa de imagen
+function toImgUrl(url) {
   if (!url || typeof url !== 'string') return '';
   url = url.trim();
   if (!url.startsWith('http')) return '';
 
-  let fileId = null;
+  // Google Drive: /file/d/ID/
+  const gd = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (gd) return `https://lh3.googleusercontent.com/d/${gd[1]}=w600`;
 
-  // Format 1: /file/d/FILE_ID/
-  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (m1) fileId = m1[1];
+  // Google Drive: ?id=ID
+  const gd2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (gd2) return `https://lh3.googleusercontent.com/d/${gd2[1]}=w600`;
 
-  // Format 2: ?id=FILE_ID
-  if (!fileId) {
-    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (m2) fileId = m2[1];
+  // SharePoint / OneDrive: reemplaza cualquier ?e=XXX o ?xxx por ?download=1
+  if (url.includes('sharepoint.com') || url.includes('1drv.ms') || url.includes('onedrive.live.com')) {
+    if (url.includes('download=1')) return url; // ya está convertido
+    // Quita todo lo que haya después de ? y agrega download=1
+    return url.split('?')[0] + '?download=1';
   }
 
-  // Format 3: /open?id=FILE_ID
-  if (!fileId) {
-    const m3 = url.match(/open\?id=([a-zA-Z0-9_-]+)/);
-    if (m3) fileId = m3[1];
-  }
+  // Ya es una URL directa de imagen
+  if (/\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url)) return url;
 
-  // Format 4: thumbnail URL already
-  if (!fileId && url.includes('thumbnail')) return url;
-
-  // Format 5: already a direct lh3/usercontent link
-  if (!fileId && (url.includes('lh3.google') || url.includes('googleusercontent'))) return url;
-
-  if (fileId) {
-    // Use thumbnail endpoint — works without auth for files shared as "anyone with link"
-    return `https://lh3.googleusercontent.com/d/${fileId}=w600`;
-  }
-
-  return url; // return as-is if nothing matched
+  return url;
 }
 
 async function loadData() {
@@ -213,47 +206,33 @@ async function loadData() {
   document.getElementById('controls').style.display = 'none';
 
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
 
-    let rows = [];
-    if (Array.isArray(raw)) {
-      rows = raw;
-    } else if (raw.data && Array.isArray(raw.data)) {
-      rows = raw.data;
-    } else if (raw.values && Array.isArray(raw.values)) {
-      const [headers, ...body] = raw.values;
-      rows = body.map(r => Object.fromEntries(headers.map((h,i) => [h, r[i]])));
-    } else {
-      const firstArr = Object.values(raw).find(v => Array.isArray(v));
-      if (firstArr) rows = firstArr;
-    }
+    // Power Automate devuelve array directo o dentro de "value"
+    let rows = Array.isArray(raw) ? raw : (raw.value || []);
 
-    allData = rows.map(r => {
-      // Find photo URL — look for "Foto" column in any case/variation
-      const fotoUrl = r['Foto'] || r['foto'] || r['FOTO'] || r['Photo'] || r['photo'] || r['imagen'] || r['Imagen'] || '';
-
-      return {
-        codigo:   String(r['Código'] || r['Codigo'] || r['codigo'] || '').trim(),
-        tela:     r['Tela']      || r['tela']      || '',
-        color:    r['colordesc'] || r['color']     || r['Color'] || '',
-        blend:    r['Blend']     || r['blend']      || '',
-        grams:    parseFloat(r['Grams']  || r['grams']  || 0) || 0,
-        libras:   parseFloat(r['Libras'] || r['libras'] || 0) || 0,
-        vendorref: r['vendorreference2'] || '',
-        fotoRaw:  fotoUrl,
-        fotoUrl:  driveToImg(fotoUrl)
-      };
-    }).filter(r => r.tela || r.color || r.codigo);
+    allData = rows.map(r => ({
+      correlativo:    r.Correlativo    || r.correlativo    || '',
+      codigo:         r.Codigo         || r.codigo         || r.Código || '',
+      tela:           r.Tela           || r.tela           || '',
+      color:          r.Color          || r.color          || '',
+      blend:          r.Blend          || r.blend          || '',
+      grams:          parseFloat(r.Grams    || r.grams    || 0) || 0,
+      libras:         parseFloat(r.Libras   || r.libras   || 0) || 0,
+      vendorRef:      r.VendorReference || r.vendorreference || '',
+      componentId:    r.ComponentID    || r.componentid    || '',
+      purchaseuom:    r.Purchaseuom    || r.purchaseuom    || '',
+      fotoUrl:        toImgUrl(r.Link  || r.link || r.Foto || r.foto || '')
+    })).filter(r => r.tela || r.color || r.codigo);
 
     buildFilters();
     updateStats();
-
     document.getElementById('mainContent').innerHTML = '<div class="grid" id="grid"></div>';
     renderGrid();
     document.getElementById('controls').style.display = '';
-    document.getElementById('lastUpdated').textContent = 'Act. ' + new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('lastUpdated').textContent = 'Act. ' + new Date().toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
 
   } catch(err) {
     document.getElementById('mainContent').innerHTML = `
@@ -312,13 +291,10 @@ function renderGrid() {
   grid.innerHTML = items.map((d,i) => {
     const imgHtml = d.fotoUrl
       ? `<div class="img-loading"><div class="mini-spin"></div></div>
-         <img class="card-img"
-              src="${d.fotoUrl}"
-              alt="${d.color}"
-              loading="lazy"
+         <img class="card-img" src="${d.fotoUrl}" alt="${d.color}" loading="lazy"
               onload="this.previousElementSibling.style.opacity='0'"
               onerror="this.previousElementSibling.style.opacity='0';this.style.display='none'">`
-      : `<div class="card-img-placeholder"><span style="font-size:1.8rem">🧵</span><span>Sin foto</span></div>`;
+      : `<div class="card-img-placeholder"><span style="font-size:1.8rem">🧵</span><span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--warm-grey)">Sin foto</span></div>`;
 
     return `
     <div class="card" onclick="openModal(${allData.indexOf(d)})" style="animation-delay:${i*0.025}s">
@@ -350,17 +326,21 @@ function openModal(idx) {
   const d = allData[idx];
   if (!d) return;
   const mImg = document.getElementById('modalImg');
-  mImg.style.display = '';
+  mImg.style.display = d.fotoUrl ? '' : 'none';
   mImg.src = d.fotoUrl || '';
-  if (!d.fotoUrl) mImg.style.display = 'none';
   document.getElementById('modalFabric').textContent = d.tela;
   document.getElementById('modalColor').textContent = d.color||'—';
   document.getElementById('modalBlend').textContent = d.blend||'';
   document.getElementById('modalGrams').textContent = d.grams ? d.grams+' g' : '—';
   document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('es',{maximumFractionDigits:2})+' lb' : '—';
+  document.getElementById('modalExtra').innerHTML = [
+    d.vendorRef   ? `<div class="extra-item"><strong>${d.vendorRef}</strong>Vendor Ref</div>` : '',
+    d.componentId ? `<div class="extra-item"><strong>${d.componentId}</strong>Component ID</div>` : '',
+    d.purchaseuom ? `<div class="extra-item"><strong>${d.purchaseuom}</strong>UOM</div>` : '',
+    d.correlativo ? `<div class="extra-item"><strong>${d.correlativo}</strong>Correlativo</div>` : '',
+  ].join('');
   document.getElementById('modalCodigo').innerHTML =
-    'Código: <strong>'+(d.codigo||'—')+'</strong>'+
-    (d.vendorref&&d.vendorref!=='-'?' &nbsp;·&nbsp; Ref: <strong>'+d.vendorref+'</strong>':'');
+    'Código: <strong>'+(d.codigo||'—')+'</strong>';
   document.getElementById('modalOverlay').classList.add('open');
 }
 
