@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo de Telas Disponibles</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>Catálogo de Telas · Celeritas Manufacturing</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
     --cream: #f5f0e8; --ink: #1a1714; --warm-grey: #8c8178;
@@ -20,26 +20,16 @@
   .header-label { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.25em; color:var(--accent); text-transform:uppercase; margin-bottom:1rem; }
   header h1 { font-size:clamp(2.2rem,4vw,4rem); font-weight:300; letter-spacing:-0.02em; line-height:1; margin-bottom:0.5rem; }
   header h1 em { font-style:italic; color:var(--accent); }
-  .header-sub { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--warm-grey); letter-spacing:0.1em; margin-top:1rem; }
-  .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(74,124,89,0.15); border:1px solid rgba(74,124,89,0.4); color:#6aad82; padding:0.35rem 0.8rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; margin-top:1rem; }
-  .live-dot { width:6px; height:6px; border-radius:50%; background:#6aad82; animation:pulse 1.8s infinite; }
   .header-stats { display:flex; gap:2rem; align-items:flex-end; }
   .stat { text-align:center; }
   .stat-num { font-size:2.2rem; font-weight:300; color:var(--accent); line-height:1; }
   .stat-lbl { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--warm-grey); text-transform:uppercase; margin-top:0.3rem; }
 
-  .controls { background:var(--surface); border-bottom:1px solid var(--border); padding:1.5rem 4rem; position:sticky; top:0; z-index:100; }
-  .controls-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
-  .search-wrap { position:relative; flex:1; min-width:240px; }
-  .search-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--warm-grey); }
-  input[type="search"] { width:100%; padding:0.7rem 1rem 0.7rem 2.4rem; border:1px solid var(--border); background:white; font-family:'DM Mono',monospace; font-size:0.8rem; letter-spacing:0.05em; color:var(--ink); outline:none; transition:border-color 0.2s; }
-  input[type="search"]:focus { border-color:var(--accent); }
-  select { padding:0.7rem 2rem 0.7rem 1rem; border:1px solid var(--border); background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8178' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.7rem center; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--ink); cursor:pointer; outline:none; appearance:none; }
-  .refresh-btn { background:none; border:1px solid var(--border); padding:0.6rem 1rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:var(--warm-grey); text-transform:uppercase; transition:all 0.2s; white-space:nowrap; }
-  .refresh-btn:hover { border-color:var(--accent); color:var(--accent-dark); }
-  .refresh-btn.spinning svg { animation:spin 0.8s linear infinite; }
+  .controls { background:var(--surface); border-bottom:1px solid var(--border); padding:1.2rem 4rem; position:sticky; top:0; z-index:100; }
+  .controls-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  select { padding:0.65rem 2rem 0.65rem 1rem; border:1px solid var(--border); background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8178' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.7rem center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--ink); cursor:pointer; outline:none; appearance:none; transition:border-color 0.2s; }
+  select:focus { border-color:var(--accent); }
   .count-badge { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--warm-grey); letter-spacing:0.1em; white-space:nowrap; margin-left:auto; }
-  .last-updated { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--warm-grey); opacity:0.7; white-space:nowrap; }
 
   .loader { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8rem 2rem; gap:1.5rem; }
   .spinner { width:40px; height:40px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
@@ -51,20 +41,23 @@
   .retry-btn { background:var(--ink); color:white; border:none; padding:0.7rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; }
 
   .grid { max-width:1400px; margin:0 auto; padding:3rem 4rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:2px; }
+
   .card { background:white; position:relative; overflow:hidden; transition:transform 0.3s,box-shadow 0.3s; cursor:pointer; animation:fadeIn 0.4s ease both; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(26,23,20,0.15); z-index:2; }
+
+  /* Imagen con lazy load manual */
   .card-img-wrap { overflow:hidden; position:relative; background:var(--tag-bg); height:230px; }
-  .card-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s; }
+  .card-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s, opacity 0.4s; opacity:0; }
+  .card-img.loaded { opacity:1; }
   .card:hover .card-img { transform:scale(1.04); }
-  .card-img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; }
-  .img-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--tag-bg); transition:opacity 0.3s; }
-  .img-loading .mini-spin { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent-dark); border-radius:50%; animation:spin 0.7s linear infinite; }
-  .card-badge { position:absolute; top:10px; left:10px; background:var(--ink); color:var(--cream); font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; padding:0.2rem 0.55rem; text-transform:uppercase; z-index:1; }
+  .card-img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; position:absolute; inset:0; }
+  .card-img-placeholder span { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--warm-grey); }
+
   .card-body { padding:1.1rem 1.3rem 1.3rem; border-top:2px solid var(--border); }
   .card-fabric { font-size:0.62rem; font-family:'DM Mono',monospace; letter-spacing:0.15em; color:var(--accent-dark); text-transform:uppercase; margin-bottom:0.35rem; }
-  .card-color { font-size:1.25rem; font-weight:400; letter-spacing:-0.01em; line-height:1.2; margin-bottom:0.6rem; }
-  .card-blend { font-size:0.76rem; color:var(--warm-grey); line-height:1.5; font-style:italic; margin-bottom:0.9rem; min-height:2em; }
+  .card-color { font-size:1.25rem; font-weight:400; letter-spacing:-0.01em; line-height:1.2; margin-bottom:0.5rem; }
+  .card-blend { font-family:'Inter',sans-serif; font-size:0.72rem; font-weight:300; color:var(--warm-grey); line-height:1.5; margin-bottom:0.9rem; min-height:2em; }
   .card-meta { display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); padding-top:0.75rem; }
   .meta-item { text-align:center; }
   .meta-val { font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink); }
@@ -82,16 +75,13 @@
   .modal-content { padding:2.5rem; display:flex; flex-direction:column; }
   .modal-close { position:absolute; top:0; right:0; width:38px; height:38px; background:var(--ink); color:white; border:none; cursor:pointer; font-size:1.3rem; display:flex; align-items:center; justify-content:center; z-index:10; }
   .modal-fabric { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--accent-dark); text-transform:uppercase; margin-bottom:0.5rem; }
-  .modal-color { font-size:1.9rem; font-weight:300; letter-spacing:-0.02em; line-height:1.1; margin-bottom:0.9rem; }
-  .modal-blend { font-size:0.88rem; color:var(--warm-grey); font-style:italic; line-height:1.6; margin-bottom:1.4rem; padding-bottom:1.4rem; border-bottom:1px solid var(--border); }
-  .modal-specs { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.2rem; }
+  .modal-color { font-size:1.9rem; font-weight:300; letter-spacing:-0.02em; line-height:1.1; margin-bottom:0.6rem; }
+  .modal-blend { font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:300; color:var(--warm-grey); line-height:1.6; margin-bottom:1.4rem; padding-bottom:1.4rem; border-bottom:1px solid var(--border); }
+  .modal-specs { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
   .spec-box { background:var(--tag-bg); padding:0.8rem 1rem; }
   .spec-val { font-family:'DM Mono',monospace; font-size:1.25rem; color:var(--ink); }
   .spec-lbl { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--warm-grey); text-transform:uppercase; margin-top:0.25rem; }
-  .modal-extra { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.2rem; }
-  .extra-item { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--warm-grey); }
-  .extra-item strong { display:block; color:var(--ink); font-size:0.78rem; margin-bottom:0.2rem; }
-  .modal-codigo { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--warm-grey); letter-spacing:0.1em; margin-top:auto; padding-top:1rem; border-top:1px solid var(--border); }
+
   .empty { grid-column:1/-1; text-align:center; padding:6rem 2rem; color:var(--warm-grey); }
   .empty p { font-style:italic; font-size:1.1rem; }
   footer { background:var(--ink); color:var(--warm-grey); text-align:center; padding:2rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; margin-top:4rem; }
@@ -102,6 +92,7 @@
     .modal-img-wrap { min-height:220px; max-height:280px; }
     .grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); padding:1.5rem; }
     .header-stats { gap:1.2rem; }
+    .controls-inner { gap:0.6rem; }
   }
 </style>
 </head>
@@ -110,14 +101,12 @@
 <header>
   <div class="header-inner">
     <div>
-      <div class="header-label">Inventario en tiempo real</div>
+      <div class="header-label">Celeritas Manufacturing</div>
       <h1>Catálogo de<br><em>Telas Disponibles</em></h1>
-      <div class="header-sub">Datos sincronizados desde SharePoint</div>
-      <div class="live-badge"><span class="live-dot"></span>Conectado a SharePoint · Power Automate</div>
     </div>
     <div class="header-stats">
       <div class="stat"><div class="stat-num" id="statTelas">—</div><div class="stat-lbl">Telas</div></div>
-      <div class="stat"><div class="stat-num" id="statLibras">—</div><div class="stat-lbl">Libras totales</div></div>
+      <div class="stat"><div class="stat-num" id="statLibras">—</div><div class="stat-lbl">Libras disponibles</div></div>
       <div class="stat"><div class="stat-num" id="statTipos">—</div><div class="stat-lbl">Tipos</div></div>
     </div>
   </div>
@@ -125,18 +114,15 @@
 
 <div class="controls" id="controls" style="display:none">
   <div class="controls-inner">
-    <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="searchInput" placeholder="Buscar por tela, color, composición..." oninput="renderGrid()">
-    </div>
-    <select id="fabricFilter" onchange="renderGrid()">
-      <option value="">Todos los tejidos</option>
+    <select id="telaFilter" onchange="renderGrid()">
+      <option value="">Todas las telas</option>
     </select>
-    <button class="refresh-btn" id="refreshBtn" onclick="loadData()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
-      Actualizar
-    </button>
-    <span class="last-updated" id="lastUpdated"></span>
+    <select id="blendFilter" onchange="renderGrid()">
+      <option value="">Todas las composiciones</option>
+    </select>
+    <select id="colorFilter" onchange="renderGrid()">
+      <option value="">Todos los colores</option>
+    </select>
     <div class="count-badge" id="countBadge"></div>
   </div>
 </div>
@@ -157,82 +143,46 @@
       <div class="modal-specs">
         <div class="spec-box"><div class="spec-val" id="modalGrams"></div><div class="spec-lbl">Gramos / m²</div></div>
         <div class="spec-box"><div class="spec-val" id="modalLibras"></div><div class="spec-lbl">Libras disponibles</div></div>
+        <div class="spec-box"><div class="spec-val" id="modalUom"></div><div class="spec-lbl">Unidad de compra</div></div>
       </div>
-      <div class="modal-extra" id="modalExtra"></div>
-      <div class="modal-codigo" id="modalCodigo"></div>
     </div>
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">×</button>
   </div>
 </div>
 
-<footer>Catálogo sincronizado en tiempo real · SharePoint + Power Automate</footer>
+<footer>Celeritas Manufacturing · Catálogo de Telas Disponibles</footer>
 
 <script>
 const API_URL = 'https://default01de7128f44f4d04b3006a199889f3.2d.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f3bf85f53e8a41238fb31d77b5ce720a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=QRUS8Vebf5rNs_AYxZjhiRFZhP0HiZK7lEAHgXoWC9Q';
 
 let allData = [];
-
-// Convierte links de Google Drive, OneDrive o SharePoint a URL directa de imagen
-function toImgUrl(url) {
-  if (!url || typeof url !== 'string') return '';
-  url = url.trim();
-  if (!url.startsWith('http')) return '';
-
-  // Google Drive: /file/d/ID/
-  const gd = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (gd) return `https://lh3.googleusercontent.com/d/${gd[1]}=w600`;
-
-  // Google Drive: ?id=ID
-  const gd2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (gd2) return `https://lh3.googleusercontent.com/d/${gd2[1]}=w600`;
-
-  // SharePoint / OneDrive: reemplaza cualquier ?e=XXX o ?xxx por ?download=1
-  if (url.includes('sharepoint.com') || url.includes('1drv.ms') || url.includes('onedrive.live.com')) {
-    if (url.includes('download=1')) return url; // ya está convertido
-    // Quita todo lo que haya después de ? y agrega download=1
-    return url.split('?')[0] + '?download=1';
-  }
-
-  // Ya es una URL directa de imagen
-  if (/\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url)) return url;
-
-  return url;
-}
+let observer = null;
 
 async function loadData() {
-  const btn = document.getElementById('refreshBtn');
-  if (btn) btn.classList.add('spinning');
   document.getElementById('mainContent').innerHTML = '<div class="loader"><div class="spinner"></div><p>Cargando inventario...</p></div>';
   document.getElementById('controls').style.display = 'none';
 
   try {
-    const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
-
-    // Power Automate devuelve array directo o dentro de "value"
     let rows = Array.isArray(raw) ? raw : (raw.value || []);
 
     allData = rows.map(r => ({
-      correlativo:    r.Correlativo    || r.correlativo    || '',
-      codigo:         r.Codigo         || r.codigo         || r.Código || '',
-      tela:           r.Tela           || r.tela           || '',
-      color:          r.Color          || r.color          || '',
-      blend:          r.Blend          || r.blend          || '',
-      grams:          parseFloat(r.Grams    || r.grams    || 0) || 0,
-      libras:         parseFloat(r.Libras   || r.libras   || 0) || 0,
-      vendorRef:      r.VendorReference || r.vendorreference || '',
-      componentId:    r.ComponentID    || r.componentid    || '',
-      purchaseuom:    r.Purchaseuom    || r.purchaseuom    || '',
-      fotoUrl:        toImgUrl(r.Link  || r.link || r.Foto || r.foto || '')
-    })).filter(r => r.tela || r.color || r.codigo);
+      tela:        r.Tela        || r.tela        || '',
+      color:       r.Color       || r.color       || '',
+      blend:       r.Blend       || r.blend       || '',
+      grams:       parseFloat(r.Grams   || r.grams   || 0) || 0,
+      libras:      parseFloat(r.Libras  || r.libras  || 0) || 0,
+      purchaseuom: r.Purchaseuom || r.purchaseuom  || '',
+      fotoUrl:     String(r.Link || r.link || r.Foto || r.foto || '').trim()
+    })).filter(r => r.tela || r.color);
 
     buildFilters();
     updateStats();
     document.getElementById('mainContent').innerHTML = '<div class="grid" id="grid"></div>';
     renderGrid();
     document.getElementById('controls').style.display = '';
-    document.getElementById('lastUpdated').textContent = 'Act. ' + new Date().toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
 
   } catch(err) {
     document.getElementById('mainContent').innerHTML = `
@@ -241,40 +191,67 @@ async function loadData() {
         <p>Error: <em>${err.message}</em></p>
         <button class="retry-btn" onclick="loadData()">Reintentar</button>
       </div>`;
-  } finally {
-    if (btn) btn.classList.remove('spinning');
   }
 }
 
 function buildFilters() {
-  const sel = document.getElementById('fabricFilter');
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">Todos los tejidos</option>';
-  [...new Set(allData.map(d => d.tela).filter(Boolean))].sort().forEach(f => {
-    const o = document.createElement('option');
-    o.value = f; o.textContent = f;
-    if (f === cur) o.selected = true;
-    sel.appendChild(o);
-  });
+  function populate(id, values, label) {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">${label}</option>`;
+    [...new Set(values.filter(Boolean))].sort().forEach(v => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = v;
+      if (v === cur) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+  populate('telaFilter',  allData.map(d => d.tela),  'Todas las telas');
+  populate('blendFilter', allData.map(d => d.blend), 'Todas las composiciones');
+  populate('colorFilter', allData.map(d => d.color), 'Todos los colores');
 }
 
 function updateStats() {
   document.getElementById('statTelas').textContent = allData.length;
   const totalLib = allData.reduce((s,d) => s + d.libras, 0);
-  document.getElementById('statLibras').textContent = totalLib > 1000
-    ? Math.round(totalLib/1000)+'K'
-    : Math.round(totalLib).toLocaleString('es');
+  document.getElementById('statLibras').textContent = totalLib.toLocaleString('en-US', {maximumFractionDigits:2});
   document.getElementById('statTipos').textContent = new Set(allData.map(d=>d.tela).filter(Boolean)).size;
 }
 
 function getFiltered() {
-  const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
-  const fab = document.getElementById('fabricFilter')?.value||'';
+  const tela  = document.getElementById('telaFilter')?.value  || '';
+  const blend = document.getElementById('blendFilter')?.value || '';
+  const color = document.getElementById('colorFilter')?.value || '';
   return allData.filter(d =>
-    (!q || d.tela.toLowerCase().includes(q) || d.color.toLowerCase().includes(q) ||
-           d.blend.toLowerCase().includes(q) || d.codigo.toLowerCase().includes(q)) &&
-    (!fab || d.tela === fab)
+    (!tela  || d.tela  === tela)  &&
+    (!blend || d.blend === blend) &&
+    (!color || d.color === color)
   );
+}
+
+// Intersection Observer: carga la imagen solo cuando la tarjeta es visible
+function setupLazyLoad() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target.querySelector('img[data-src]');
+        if (img) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+          img.onload = () => img.classList.add('loaded');
+          img.onerror = () => {
+            img.style.display = 'none';
+            const ph = entry.target.querySelector('.card-img-placeholder');
+            if (ph) ph.style.display = 'flex';
+          };
+        }
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '200px' }); // empieza a cargar 200px antes de entrar en pantalla
+
+  document.querySelectorAll('.card-img-wrap').forEach(el => observer.observe(el));
 }
 
 function renderGrid() {
@@ -289,18 +266,15 @@ function renderGrid() {
   }
 
   grid.innerHTML = items.map((d,i) => {
-    const imgHtml = d.fotoUrl
-      ? `<div class="img-loading"><div class="mini-spin"></div></div>
-         <img class="card-img" src="${d.fotoUrl}" alt="${d.color}" loading="lazy"
-              onload="this.previousElementSibling.style.opacity='0'"
-              onerror="this.previousElementSibling.style.opacity='0';this.style.display='none'">`
-      : `<div class="card-img-placeholder"><span style="font-size:1.8rem">🧵</span><span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--warm-grey)">Sin foto</span></div>`;
-
+    const hasImg = !!d.fotoUrl;
     return `
-    <div class="card" onclick="openModal(${allData.indexOf(d)})" style="animation-delay:${i*0.025}s">
+    <div class="card" onclick="openModal(${allData.indexOf(d)})" style="animation-delay:${i*0.02}s">
       <div class="card-img-wrap">
-        ${imgHtml}
-        <span class="card-badge">${d.tela||'—'}</span>
+        <div class="card-img-placeholder" style="display:${hasImg ? 'none' : 'flex'}">
+          <span style="font-size:1.8rem">🧵</span>
+          <span>Sin foto</span>
+        </div>
+        ${hasImg ? `<img class="card-img" data-src="${d.fotoUrl}" alt="${d.color}">` : ''}
       </div>
       <div class="card-body">
         <div class="card-fabric">${d.tela}</div>
@@ -312,7 +286,7 @@ function renderGrid() {
             <div class="meta-lbl">Peso</div>
           </div>
           <div class="meta-item">
-            <div class="meta-val">${d.libras?d.libras.toLocaleString('es',{maximumFractionDigits:0}):'—'}<span style="font-size:0.6rem;color:var(--warm-grey)"> lb</span></div>
+            <div class="meta-val">${d.libras?d.libras.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}<span style="font-size:0.6rem;color:var(--warm-grey)"> lb</span></div>
             <div class="meta-lbl">Disponible</div>
           </div>
           <div class="avail-tag"><span class="avail-dot"></span>En stock</div>
@@ -320,6 +294,8 @@ function renderGrid() {
       </div>
     </div>`;
   }).join('');
+
+  setupLazyLoad();
 }
 
 function openModal(idx) {
@@ -329,28 +305,21 @@ function openModal(idx) {
   mImg.style.display = d.fotoUrl ? '' : 'none';
   mImg.src = d.fotoUrl || '';
   document.getElementById('modalFabric').textContent = d.tela;
-  document.getElementById('modalColor').textContent = d.color||'—';
-  document.getElementById('modalBlend').textContent = d.blend||'';
-  document.getElementById('modalGrams').textContent = d.grams ? d.grams+' g' : '—';
-  document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('es',{maximumFractionDigits:2})+' lb' : '—';
-  document.getElementById('modalExtra').innerHTML = [
-    d.vendorRef   ? `<div class="extra-item"><strong>${d.vendorRef}</strong>Vendor Ref</div>` : '',
-    d.componentId ? `<div class="extra-item"><strong>${d.componentId}</strong>Component ID</div>` : '',
-    d.purchaseuom ? `<div class="extra-item"><strong>${d.purchaseuom}</strong>UOM</div>` : '',
-    d.correlativo ? `<div class="extra-item"><strong>${d.correlativo}</strong>Correlativo</div>` : '',
-  ].join('');
-  document.getElementById('modalCodigo').innerHTML =
-    'Código: <strong>'+(d.codigo||'—')+'</strong>';
+  document.getElementById('modalColor').textContent = d.color || '—';
+  document.getElementById('modalBlend').textContent = d.blend || '';
+  document.getElementById('modalGrams').textContent = d.grams ? d.grams + ' g' : '—';
+  document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('en-US',{maximumFractionDigits:2}) + ' lb' : '—';
+  document.getElementById('modalUom').textContent = d.purchaseuom || '—';
   document.getElementById('modalOverlay').classList.add('open');
 }
 
 function closeModal(e) {
-  if (e.target===document.getElementById('modalOverlay'))
+  if (e.target === document.getElementById('modalOverlay'))
     document.getElementById('modalOverlay').classList.remove('open');
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key==='Escape') document.getElementById('modalOverlay').classList.remove('open');
+  if (e.key === 'Escape') document.getElementById('modalOverlay').classList.remove('open');
 });
 
 loadData();
