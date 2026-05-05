@@ -41,19 +41,15 @@
   .retry-btn { background:var(--ink); color:white; border:none; padding:0.7rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; }
 
   .grid { max-width:1400px; margin:0 auto; padding:3rem 4rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:2px; }
-
   .card { background:white; position:relative; overflow:hidden; transition:transform 0.3s,box-shadow 0.3s; cursor:pointer; animation:fadeIn 0.4s ease both; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(26,23,20,0.15); z-index:2; }
-
-  /* Imagen con lazy load manual */
   .card-img-wrap { overflow:hidden; position:relative; background:var(--tag-bg); height:230px; }
   .card-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s, opacity 0.4s; opacity:0; }
   .card-img.loaded { opacity:1; }
   .card:hover .card-img { transform:scale(1.04); }
   .card-img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; position:absolute; inset:0; }
   .card-img-placeholder span { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--warm-grey); }
-
   .card-body { padding:1.1rem 1.3rem 1.3rem; border-top:2px solid var(--border); }
   .card-fabric { font-size:0.62rem; font-family:'DM Mono',monospace; letter-spacing:0.15em; color:var(--accent-dark); text-transform:uppercase; margin-bottom:0.35rem; }
   .card-color { font-size:1.25rem; font-weight:400; letter-spacing:-0.01em; line-height:1.2; margin-bottom:0.5rem; }
@@ -81,7 +77,6 @@
   .spec-box { background:var(--tag-bg); padding:0.8rem 1rem; }
   .spec-val { font-family:'DM Mono',monospace; font-size:1.25rem; color:var(--ink); }
   .spec-lbl { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--warm-grey); text-transform:uppercase; margin-top:0.25rem; }
-
   .empty { grid-column:1/-1; text-align:center; padding:6rem 2rem; color:var(--warm-grey); }
   .empty p { font-style:italic; font-size:1.1rem; }
   footer { background:var(--ink); color:var(--warm-grey); text-align:center; padding:2rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; margin-top:4rem; }
@@ -158,6 +153,25 @@ const API_URL = 'https://default01de7128f44f4d04b3006a199889f3.2d.environment.ap
 let allData = [];
 let observer = null;
 
+// Convierte cualquier formato de Google Drive a URL directa de imagen
+function toImgUrl(url) {
+  if (!url || !url.startsWith('http')) return '';
+  url = url.trim();
+
+  // Formato: ?id=FILE_ID  (uc?export=view&id=... o cualquier variante)
+  const m1 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m1) return 'https://lh3.googleusercontent.com/d/' + m1[1] + '=w800';
+
+  // Formato: /file/d/FILE_ID/
+  const m2 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m2) return 'https://lh3.googleusercontent.com/d/' + m2[1] + '=w800';
+
+  // URL directa de imagen
+  if (/\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url)) return url;
+
+  return url;
+}
+
 async function loadData() {
   document.getElementById('mainContent').innerHTML = '<div class="loader"><div class="spinner"></div><p>Cargando inventario...</p></div>';
   document.getElementById('controls').style.display = 'none';
@@ -175,7 +189,7 @@ async function loadData() {
       grams:       parseFloat(r.Grams   || r.grams   || 0) || 0,
       libras:      parseFloat(r.Libras  || r.libras  || 0) || 0,
       purchaseuom: r.Purchaseuom || r.purchaseuom  || '',
-      fotoUrl:     String(r.Link || r.link || r.Foto || r.foto || '').trim()
+      fotoUrl:     toImgUrl(String(r.Link || r.link || r.Foto || r.foto || '').trim())
     })).filter(r => r.tela || r.color);
 
     buildFilters();
@@ -185,12 +199,8 @@ async function loadData() {
     document.getElementById('controls').style.display = '';
 
   } catch(err) {
-    document.getElementById('mainContent').innerHTML = `
-      <div class="error-box">
-        <h3>No se pudo conectar</h3>
-        <p>Error: <em>${err.message}</em></p>
-        <button class="retry-btn" onclick="loadData()">Reintentar</button>
-      </div>`;
+    document.getElementById('mainContent').innerHTML =
+      '<div class="error-box"><h3>No se pudo conectar</h3><p>Error: <em>' + err.message + '</em></p><button class="retry-btn" onclick="loadData()">Reintentar</button></div>';
   }
 }
 
@@ -198,7 +208,7 @@ function buildFilters() {
   function populate(id, values, label) {
     const sel = document.getElementById(id);
     const cur = sel.value;
-    sel.innerHTML = `<option value="">${label}</option>`;
+    sel.innerHTML = '<option value="">' + label + '</option>';
     [...new Set(values.filter(Boolean))].sort().forEach(v => {
       const o = document.createElement('option');
       o.value = v; o.textContent = v;
@@ -229,7 +239,6 @@ function getFiltered() {
   );
 }
 
-// Intersection Observer: carga la imagen solo cuando la tarjeta es visible
 function setupLazyLoad() {
   if (observer) observer.disconnect();
   observer = new IntersectionObserver((entries) => {
@@ -239,7 +248,7 @@ function setupLazyLoad() {
         if (img) {
           img.src = img.dataset.src;
           img.removeAttribute('data-src');
-          img.onload = () => img.classList.add('loaded');
+          img.onload  = () => img.classList.add('loaded');
           img.onerror = () => {
             img.style.display = 'none';
             const ph = entry.target.querySelector('.card-img-placeholder');
@@ -249,8 +258,7 @@ function setupLazyLoad() {
         observer.unobserve(entry.target);
       }
     });
-  }, { rootMargin: '200px' }); // empieza a cargar 200px antes de entrar en pantalla
-
+  }, { rootMargin: '300px' });
   document.querySelectorAll('.card-img-wrap').forEach(el => observer.observe(el));
 }
 
@@ -258,41 +266,30 @@ function renderGrid() {
   const grid = document.getElementById('grid');
   if (!grid) return;
   const items = getFiltered();
-  document.getElementById('countBadge').textContent = items.length + ' resultado' + (items.length!==1?'s':'');
+  document.getElementById('countBadge').textContent = items.length + ' resultado' + (items.length !== 1 ? 's' : '');
 
   if (!items.length) {
     grid.innerHTML = '<div class="empty"><p>No se encontraron telas con esos criterios</p></div>';
     return;
   }
 
-  grid.innerHTML = items.map((d,i) => {
+  grid.innerHTML = items.map((d, i) => {
     const hasImg = !!d.fotoUrl;
-    return `
-    <div class="card" onclick="openModal(${allData.indexOf(d)})" style="animation-delay:${i*0.02}s">
-      <div class="card-img-wrap">
-        <div class="card-img-placeholder" style="display:${hasImg ? 'none' : 'flex'}">
-          <span style="font-size:1.8rem">🧵</span>
-          <span>Sin foto</span>
-        </div>
-        ${hasImg ? `<img class="card-img" data-src="${d.fotoUrl}" alt="${d.color}">` : ''}
-      </div>
-      <div class="card-body">
-        <div class="card-fabric">${d.tela}</div>
-        <div class="card-color">${d.color||'—'}</div>
-        <div class="card-blend">${d.blend||''}</div>
-        <div class="card-meta">
-          <div class="meta-item">
-            <div class="meta-val">${d.grams||'—'}<span style="font-size:0.6rem;color:var(--warm-grey)"> g/m²</span></div>
-            <div class="meta-lbl">Peso</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-val">${d.libras?d.libras.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}<span style="font-size:0.6rem;color:var(--warm-grey)"> lb</span></div>
-            <div class="meta-lbl">Disponible</div>
-          </div>
-          <div class="avail-tag"><span class="avail-dot"></span>En stock</div>
-        </div>
-      </div>
-    </div>`;
+    return '<div class="card" onclick="openModal(' + allData.indexOf(d) + ')" style="animation-delay:' + (i * 0.02) + 's">'
+      + '<div class="card-img-wrap">'
+      + '<div class="card-img-placeholder" style="display:' + (hasImg ? 'none' : 'flex') + '">'
+      + '<span style="font-size:1.8rem">&#129525;</span><span>Sin foto</span></div>'
+      + (hasImg ? '<img class="card-img" data-src="' + d.fotoUrl + '" alt="' + d.color + '">' : '')
+      + '</div>'
+      + '<div class="card-body">'
+      + '<div class="card-fabric">' + d.tela + '</div>'
+      + '<div class="card-color">' + (d.color || '—') + '</div>'
+      + '<div class="card-blend">' + (d.blend || '') + '</div>'
+      + '<div class="card-meta">'
+      + '<div class="meta-item"><div class="meta-val">' + (d.grams || '—') + '<span style="font-size:0.6rem;color:var(--warm-grey)"> g/m²</span></div><div class="meta-lbl">Peso</div></div>'
+      + '<div class="meta-item"><div class="meta-val">' + (d.libras ? d.libras.toLocaleString('en-US', {maximumFractionDigits:0}) : '—') + '<span style="font-size:0.6rem;color:var(--warm-grey)"> lb</span></div><div class="meta-lbl">Disponible</div></div>'
+      + '<div class="avail-tag"><span class="avail-dot"></span>En stock</div>'
+      + '</div></div></div>';
   }).join('');
 
   setupLazyLoad();
@@ -305,11 +302,11 @@ function openModal(idx) {
   mImg.style.display = d.fotoUrl ? '' : 'none';
   mImg.src = d.fotoUrl || '';
   document.getElementById('modalFabric').textContent = d.tela;
-  document.getElementById('modalColor').textContent = d.color || '—';
-  document.getElementById('modalBlend').textContent = d.blend || '';
-  document.getElementById('modalGrams').textContent = d.grams ? d.grams + ' g' : '—';
-  document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('en-US',{maximumFractionDigits:2}) + ' lb' : '—';
-  document.getElementById('modalUom').textContent = d.purchaseuom || '—';
+  document.getElementById('modalColor').textContent  = d.color || '—';
+  document.getElementById('modalBlend').textContent  = d.blend || '';
+  document.getElementById('modalGrams').textContent  = d.grams  ? d.grams + ' g'  : '—';
+  document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('en-US', {maximumFractionDigits:2}) + ' lb' : '—';
+  document.getElementById('modalUom').textContent    = d.purchaseuom || '—';
   document.getElementById('modalOverlay').classList.add('open');
 }
 
