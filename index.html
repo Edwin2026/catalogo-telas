@@ -26,10 +26,27 @@
   .stat-lbl { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--warm-grey); text-transform:uppercase; margin-top:0.3rem; }
 
   .controls { background:var(--surface); border-bottom:1px solid var(--border); padding:1.2rem 4rem; position:sticky; top:0; z-index:100; }
-  .controls-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
-  select { padding:0.65rem 2rem 0.65rem 1rem; border:1px solid var(--border); background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8178' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.7rem center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--ink); cursor:pointer; outline:none; appearance:none; transition:border-color 0.2s; }
-  select:focus { border-color:var(--accent); }
+  .controls-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; }
   .count-badge { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--warm-grey); letter-spacing:0.1em; white-space:nowrap; margin-left:auto; }
+
+  /* Dropdown con checkboxes */
+  .dd-wrap { position:relative; }
+  .dd-btn { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 1rem; border:1px solid var(--border); background:white; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--ink); cursor:pointer; white-space:nowrap; min-width:160px; justify-content:space-between; user-select:none; }
+  .dd-btn:hover { border-color:var(--accent); }
+  .dd-btn.active { border-color:var(--accent-dark); }
+  .dd-badge { background:var(--accent); color:white; font-size:0.55rem; padding:0.1rem 0.4rem; border-radius:10px; margin-left:4px; }
+  .dd-arrow { font-size:0.55rem; color:var(--warm-grey); transition:transform 0.2s; }
+  .dd-btn.open .dd-arrow { transform:rotate(180deg); }
+  .dd-menu { display:none; position:absolute; top:calc(100% + 2px); left:0; min-width:100%; background:white; border:1px solid var(--border); z-index:200; max-height:240px; overflow-y:auto; box-shadow:0 8px 24px rgba(26,23,20,0.1); }
+  .dd-menu.open { display:block; }
+  .dd-item { display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.9rem; font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--ink); cursor:pointer; white-space:nowrap; }
+  .dd-item:hover { background:var(--tag-bg); }
+  .dd-item input[type=checkbox] { accent-color:var(--accent-dark); width:13px; height:13px; cursor:pointer; flex-shrink:0; }
+
+  /* Botón limpiar */
+  .clear-btn { display:none; align-items:center; gap:0.4rem; padding:0.6rem 0.9rem; border:1px solid var(--border); background:none; font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--warm-grey); cursor:pointer; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.2s; }
+  .clear-btn:hover { border-color:var(--low); color:var(--low); }
+  .clear-btn.visible { display:flex; }
 
   .loader { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8rem 2rem; gap:1.5rem; }
   .spinner { width:40px; height:40px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
@@ -66,8 +83,17 @@
   .modal-overlay.open { display:flex; }
   .modal { background:white; max-width:820px; width:100%; max-height:92vh; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; position:relative; animation:modalIn 0.28s ease; }
   @keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
-  .modal-img-wrap { position:relative; min-height:380px; background:var(--tag-bg); }
-  .modal-img { width:100%; height:100%; object-fit:cover; display:block; }
+  .modal-img-wrap { position:relative; min-height:380px; background:var(--tag-bg); overflow:hidden; }
+  .modal-img-slider { display:flex; width:100%; height:100%; transition:transform 0.35s ease; }
+  .modal-img { width:100%; height:100%; object-fit:cover; display:block; flex-shrink:0; }
+  /* Toggle buttons */
+  .img-toggle { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:2px; border:1px solid rgba(255,255,255,0.3); overflow:hidden; z-index:5; }
+  .img-toggle-btn { padding:5px 14px; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; border:none; cursor:pointer; transition:all 0.2s; background:rgba(26,23,20,0.55); color:rgba(245,240,232,0.7); }
+  .img-toggle-btn.active { background:var(--ink); color:var(--cream); }
+  /* Dots indicator (mobile) */
+  .img-dots { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:5; }
+  .img-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.4); transition:background 0.2s; cursor:pointer; }
+  .img-dot.active { background:white; }
   .modal-content { padding:2.5rem; display:flex; flex-direction:column; }
   .modal-close { position:absolute; top:0; right:0; width:38px; height:38px; background:var(--ink); color:white; border:none; cursor:pointer; font-size:1.3rem; display:flex; align-items:center; justify-content:center; z-index:10; }
   .modal-fabric { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--accent-dark); text-transform:uppercase; margin-bottom:0.5rem; }
@@ -109,15 +135,35 @@
 
 <div class="controls" id="controls" style="display:none">
   <div class="controls-inner">
-    <select id="telaFilter" onchange="renderGrid()">
-      <option value="">Todas las telas</option>
-    </select>
-    <select id="blendFilter" onchange="renderGrid()">
-      <option value="">Todas las composiciones</option>
-    </select>
-    <select id="colorFilter" onchange="renderGrid()">
-      <option value="">Todos los colores</option>
-    </select>
+
+    <div class="dd-wrap">
+      <div class="dd-btn" id="telaBtnWrap" onclick="toggleDD('tela')">
+        <span id="telaLabel">Todas las telas</span>
+        <span class="dd-arrow">&#9660;</span>
+      </div>
+      <div class="dd-menu" id="telaMenu"></div>
+    </div>
+
+    <div class="dd-wrap">
+      <div class="dd-btn" id="blendBtnWrap" onclick="toggleDD('blend')">
+        <span id="blendLabel">Todas las composiciones</span>
+        <span class="dd-arrow">&#9660;</span>
+      </div>
+      <div class="dd-menu" id="blendMenu"></div>
+    </div>
+
+    <div class="dd-wrap">
+      <div class="dd-btn" id="colorBtnWrap" onclick="toggleDD('color')">
+        <span id="colorLabel">Todos los colores</span>
+        <span class="dd-arrow">&#9660;</span>
+      </div>
+      <div class="dd-menu" id="colorMenu"></div>
+    </div>
+
+    <button class="clear-btn" id="clearBtn" onclick="clearFilters()">
+      &#10005; Limpiar filtros
+    </button>
+
     <div class="count-badge" id="countBadge"></div>
   </div>
 </div>
@@ -128,8 +174,19 @@
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal">
-    <div class="modal-img-wrap">
-      <img class="modal-img" id="modalImg" src="" alt="" onerror="this.style.display='none'">
+    <div class="modal-img-wrap" id="modalImgWrap">
+      <div class="modal-img-slider" id="modalSlider">
+        <img class="modal-img" id="modalImg" src="" alt="" onerror="this.style.display='none'">
+        <img class="modal-img" id="modalImgCamisa" src="" alt="" style="display:none" onerror="this.style.display='none'">
+      </div>
+      <div class="img-toggle" id="imgToggle" style="display:none">
+        <button class="img-toggle-btn active" id="btnTela" onclick="switchPhoto(0)">Tela</button>
+        <button class="img-toggle-btn" id="btnPrenda" onclick="switchPhoto(1)">Prenda</button>
+      </div>
+      <div class="img-dots" id="imgDots" style="display:none">
+        <div class="img-dot active" onclick="switchPhoto(0)"></div>
+        <div class="img-dot" onclick="switchPhoto(1)"></div>
+      </div>
     </div>
     <div class="modal-content">
       <div class="modal-fabric" id="modalFabric"></div>
@@ -189,7 +246,8 @@ async function loadData() {
       grams:       parseFloat(r.Grams   || r.grams   || 0) || 0,
       libras:      parseFloat(r.Libras  || r.libras  || 0) || 0,
       purchaseuom: r.Purchaseuom || r.purchaseuom  || '',
-      fotoUrl:     toImgUrl(String(r.Link || r.link || r.Foto || r.foto || '').trim())
+      fotoUrl:     toImgUrl(String(r.Link || r.link || r.Foto || r.foto || '').trim()),
+      camisaUrl:   toImgUrl(String(r.LinkCamisa || r.linkcamisa || r.Linkcamisa || '').trim())
     })).filter(r => r.tela || r.color);
 
     buildFilters();
@@ -204,21 +262,108 @@ async function loadData() {
   }
 }
 
-function buildFilters() {
-  function populate(id, values, label) {
-    const sel = document.getElementById(id);
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">' + label + '</option>';
-    [...new Set(values.filter(Boolean))].sort().forEach(v => {
-      const o = document.createElement('option');
-      o.value = v; o.textContent = v;
-      if (v === cur) o.selected = true;
-      sel.appendChild(o);
+// Estado de filtros: Set de valores seleccionados por categoría
+const filters = { tela: new Set(), blend: new Set(), color: new Set() };
+
+const LABELS = { tela: 'Todas las telas', blend: 'Todas las composiciones', color: 'Todos los colores' };
+const FIELD  = { tela: 'tela', blend: 'blend', color: 'color' };
+
+function getAvailable() {
+  // Qué valores están disponibles para cada dimensión dado lo seleccionado en las otras dos
+  const byTela  = allData.filter(d => (!filters.tela.size  || filters.tela.has(d.tela))  && (!filters.color.size || filters.color.has(d.color)));
+  const byBlend = allData.filter(d => (!filters.tela.size  || filters.tela.has(d.tela))  && (!filters.blend.size || filters.blend.has(d.blend)));
+  const byColor = allData.filter(d => (!filters.blend.size || filters.blend.has(d.blend))&& (!filters.color.size || filters.color.has(d.color)));
+  return {
+    tela:  [...new Set(byColor.map(d => d.tela).filter(Boolean))].sort(),
+    blend: [...new Set(byTela.map(d => d.blend).filter(Boolean))].sort(),
+    color: [...new Set(byBlend.map(d => d.color).filter(Boolean))].sort()
+  };
+}
+
+function buildMenu(key, available) {
+  const menu = document.getElementById(key + 'Menu');
+  const sel  = filters[key];
+  const frag = document.createDocumentFragment();
+  available.forEach(v => {
+    const lbl = document.createElement('label');
+    lbl.className = 'dd-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = sel.has(v);
+    cb.addEventListener('change', () => toggleVal(key, v, cb.checked));
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + v));
+    frag.appendChild(lbl);
+  });
+  menu.innerHTML = '';
+  menu.appendChild(frag);
+}
+
+function updateLabel(key) {
+  const sel = filters[key];
+  const lbl = document.getElementById(key + 'Label');
+  const btn = document.getElementById(key + 'BtnWrap');
+  if (sel.size === 0) {
+    lbl.innerHTML = LABELS[key];
+    btn.classList.remove('active');
+  } else if (sel.size === 1) {
+    lbl.innerHTML = [...sel][0] + ' <span class="dd-badge">1</span>';
+    btn.classList.add('active');
+  } else {
+    lbl.innerHTML = LABELS[key].split(' ')[0] + '... <span class="dd-badge">' + sel.size + '</span>';
+    btn.classList.add('active');
+  }
+}
+
+function toggleVal(key, val, checked) {
+  if (checked) filters[key].add(val); else filters[key].delete(val);
+  refreshAll();
+}
+
+function refreshAll() {
+  const avail = getAvailable();
+  ['tela','blend','color'].forEach(k => {
+    buildMenu(k, avail[k]);
+    updateLabel(k);
+  });
+  const hasAny = filters.tela.size || filters.blend.size || filters.color.size;
+  const cb = document.getElementById('clearBtn');
+  if (cb) { hasAny ? cb.classList.add('visible') : cb.classList.remove('visible'); }
+  renderGrid();
+}
+
+function toggleDD(key) {
+  const menu = document.getElementById(key + 'Menu');
+  const btn  = document.getElementById(key + 'BtnWrap');
+  const isOpen = menu.classList.contains('open');
+  // Cerrar todos
+  ['tela','blend','color'].forEach(k => {
+    document.getElementById(k + 'Menu').classList.remove('open');
+    document.getElementById(k + 'BtnWrap').classList.remove('open');
+  });
+  if (!isOpen) {
+    menu.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+
+function clearFilters() {
+  filters.tela.clear(); filters.blend.clear(); filters.color.clear();
+  refreshAll();
+}
+
+// Cerrar dropdowns al hacer clic fuera
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dd-wrap')) {
+    ['tela','blend','color'].forEach(k => {
+      document.getElementById(k + 'Menu')?.classList.remove('open');
+      document.getElementById(k + 'BtnWrap')?.classList.remove('open');
     });
   }
-  populate('telaFilter',  allData.map(d => d.tela),  'Todas las telas');
-  populate('blendFilter', allData.map(d => d.blend), 'Todas las composiciones');
-  populate('colorFilter', allData.map(d => d.color), 'Todos los colores');
+});
+
+function buildFilters() {
+  refreshAll();
 }
 
 function updateStats() {
@@ -229,13 +374,10 @@ function updateStats() {
 }
 
 function getFiltered() {
-  const tela  = document.getElementById('telaFilter')?.value  || '';
-  const blend = document.getElementById('blendFilter')?.value || '';
-  const color = document.getElementById('colorFilter')?.value || '';
   return allData.filter(d =>
-    (!tela  || d.tela  === tela)  &&
-    (!blend || d.blend === blend) &&
-    (!color || d.color === color)
+    (!filters.tela.size  || filters.tela.has(d.tela))  &&
+    (!filters.blend.size || filters.blend.has(d.blend)) &&
+    (!filters.color.size || filters.color.has(d.color))
   );
 }
 
@@ -295,12 +437,46 @@ function renderGrid() {
   setupLazyLoad();
 }
 
+let currentPhoto = 0;
+
+function switchPhoto(idx) {
+  currentPhoto = idx;
+  const slider = document.getElementById('modalSlider');
+  slider.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  document.querySelectorAll('.img-toggle-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.querySelectorAll('.img-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+}
+
 function openModal(idx) {
   const d = allData[idx];
   if (!d) return;
+  currentPhoto = 0;
+
   const mImg = document.getElementById('modalImg');
   mImg.style.display = d.fotoUrl ? '' : 'none';
   mImg.src = d.fotoUrl || '';
+
+  const mCamisa = document.getElementById('modalImgCamisa');
+  const hasCamisa = !!d.camisaUrl;
+  if (hasCamisa) {
+    mCamisa.style.display = '';
+    mCamisa.src = d.camisaUrl;
+  } else {
+    mCamisa.style.display = 'none';
+    mCamisa.src = '';
+  }
+
+  // Reset slider
+  const slider = document.getElementById('modalSlider');
+  slider.style.transform = 'translateX(0)';
+
+  // Toggle buttons (desktop) vs dots (mobile)
+  const isMobile = window.innerWidth < 640;
+  document.getElementById('imgToggle').style.display = hasCamisa && !isMobile ? 'flex' : 'none';
+  document.getElementById('imgDots').style.display   = hasCamisa && isMobile  ? 'flex' : 'none';
+  document.querySelectorAll('.img-toggle-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.img-dot').forEach((dot,i) => dot.classList.toggle('active', i===0));
+
   document.getElementById('modalFabric').textContent = d.tela;
   document.getElementById('modalColor').textContent  = d.color || '—';
   document.getElementById('modalBlend').textContent  = d.blend || '';
@@ -308,6 +484,20 @@ function openModal(idx) {
   document.getElementById('modalLibras').textContent = d.libras ? d.libras.toLocaleString('en-US', {maximumFractionDigits:2}) + ' lb' : '—';
   document.getElementById('modalUom').textContent    = d.purchaseuom || '—';
   document.getElementById('modalOverlay').classList.add('open');
+
+  // Swipe gesture for mobile
+  setupSwipe(document.getElementById('modalImgWrap'), hasCamisa);
+}
+
+function setupSwipe(el, hasCamisa) {
+  el.ontouchstart = null; el.ontouchmove = null; el.ontouchend = null;
+  if (!hasCamisa) return;
+  let startX = 0, diffX = 0;
+  el.ontouchstart = e => { startX = e.touches[0].clientX; diffX = 0; };
+  el.ontouchmove  = e => { diffX = e.touches[0].clientX - startX; };
+  el.ontouchend   = () => {
+    if (Math.abs(diffX) > 40) switchPhoto(diffX < 0 ? 1 : 0);
+  };
 }
 
 function closeModal(e) {
